@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Finance Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #5e72e4;
+            --secondary-color: #4c63d2;
+            --success-color: #2dce89;
+            --danger-color: #f5365c;
+            --warning-color: #fb6340;
+            --info-color: #11cdef;
+            --dark-color: #172b4d;
+            --light-color: #f8f9fe;
+            --gray-color: #8898aa;
+            --white: #ffffff;
+            --shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f5f7;
+            color: var(--dark-color);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 0;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--white);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .logout-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: var(--white);
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Auth Section Styles */
+        .auth-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 80px);
+            padding: 2rem 0;
+        }
+
+        .auth-container {
+            background-color: var(--white);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 450px;
+            padding: 2.5rem;
+            transition: var(--transition);
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 0.75rem 0;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: var(--transition);
+            color: var(--gray-color);
+        }
+
+        .auth-tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background-color: var(--light-color);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            background-color: var(--white);
+            box-shadow: 0 0 0 3px rgba(94, 114, 228, 0.1);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.875rem 1.5rem;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+        }
+
+        .btn-success:hover {
+            background-color: #26af74;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+        }
+
+        .btn-danger:hover {
+            background-color: #ec0c38;
+        }
+
+        .btn-secondary {
+            background-color: var(--gray-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #6c757d;
+        }
+
+        .alert {
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .alert-danger {
+            background-color: rgba(245, 54, 92, 0.1);
+            color: var(--danger-color);
+            border: 1px solid rgba(245, 54, 92, 0.2);
+        }
+
+        .alert-success {
+            background-color: rgba(45, 206, 137, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(45, 206, 137, 0.2);
+        }
+
+        /* Salary Section Styles */
+        .salary-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 80px);
+            padding: 2rem 0;
+        }
+
+        .salary-container {
+            background-color: var(--white);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 500px;
+            padding: 2.5rem;
+            text-align: center;
+        }
+
+        .salary-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+
+        .salary-subtitle {
+            color: var(--gray-color);
+            margin-bottom: 2rem;
+        }
+
+        .salary-input {
+            font-size: 1.5rem;
+            padding: 1rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .currency-selector {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+        }
+
+        .currency-selector label {
+            font-weight: 500;
+        }
+
+        .currency-selector select {
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            background-color: var(--light-color);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .currency-selector select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            background-color: var(--white);
+            box-shadow: 0 0 0 3px rgba(94, 114, 228, 0.1);
+        }
+
+        .salary-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        /* Dashboard Styles */
+        .dashboard {
+            display: none;
+            padding: 2rem 0;
+        }
+
+        .dashboard.active {
+            display: block;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .dashboard-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark-color);
+        }
+
+        .dashboard-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background-color: var(--white);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            transition: var(--transition);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+        }
+
+        .stat-card.income::before {
+            background-color: var(--success-color);
+        }
+
+        .stat-card.expense::before {
+            background-color: var(--danger-color);
+        }
+
+        .stat-card.balance::before {
+            background-color: var(--primary-color);
+        }
+
+        .stat-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-card-title {
+            font-size: 0.9rem;
+            color: var(--gray-color);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 1.2rem;
+        }
+
+        .income-icon {
+            background-color: var(--success-color);
+        }
+
+        .expense-icon {
+            background-color: var(--danger-color);
+        }
+
+        .balance-icon {
+            background-color: var(--primary-color);
+        }
+
+        .stat-card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card-change {
+            font-size: 0.85rem;
+            color: var(--gray-color);
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .stat-card-change.positive {
+            color: var(--success-color);
+        }
+
+        .stat-card-change.negative {
+            color: var(--danger-color);
+        }
+
+        .transaction-section {
+            background-color: var(--white);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .transaction-form {
+            display: none;
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            background-color: var(--light-color);
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+        }
+
+        .transaction-form.active {
+            display: block;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .transaction-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem;
+            border-bottom: 1px solid #f4f5f7;
+            transition: var(--transition);
+        }
+
+        .transaction-item:hover {
+            background-color: var(--light-color);
+        }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+
+        .transaction-details {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .transaction-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 1.2rem;
+        }
+
+        .transaction-info h4 {
+            margin-bottom: 0.25rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .transaction-info p {
+            font-size: 0.85rem;
+            color: var(--gray-color);
+        }
+
+        .transaction-amount {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .income-amount {
+            color: var(--success-color);
+        }
+
+        .expense-amount {
+            color: var(--danger-color);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--gray-color);
+        }
+
+        .empty-state i {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: #dee2e6;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalFadeIn 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #f4f5f7;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark-color);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray-color);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Category Icons */
+        .category-food { background-color: #f5365c; }
+        .category-transport { background-color: #fb6340; }
+        .category-shopping { background-color: #ffd600; }
+        .category-entertainment { background-color: #11cdef; }
+        .category-bills { background-color: #5e72e4; }
+        .category-healthcare { background-color: #2dce89; }
+        .category-education { background-color: #8965e0; }
+        .category-travel { background-color: #172b4d; }
+        .category-other { background-color: #8898aa; }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .salary-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-container">
+                <a href="#" class="logo">
+                    <i class="fas fa-wallet"></i> Finance Manager
+                </a>
+                <div class="user-info hidden" id="userInfo">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <span id="userEmail">user@example.com</span>
+                    <button class="logout-btn" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Authentication Section -->
+        <section class="auth-section" id="authSection">
+            <div class="auth-container">
+                <div class="auth-tabs">
+                    <div class="auth-tab active" id="loginTab">Login</div>
+                    <div class="auth-tab" id="registerTab">Register</div>
+                </div>
+
+                <!-- Login Form -->
+                <form class="auth-form active" id="loginForm">
+                    <div id="loginAlert"></div>
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" class="form-control" id="loginEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" class="form-control" id="loginPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-block">Login</button>
+                </form>
+
+                <!-- Register Form -->
+                <form class="auth-form" id="registerForm">
+                    <div id="registerAlert"></div>
+                    <div class="form-group">
+                        <label for="registerName">Full Name</label>
+                        <input type="text" class="form-control" id="registerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">Email</label>
+                        <input type="email" class="form-control" id="registerEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Password</label>
+                        <input type="password" class="form-control" id="registerPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <input type="password" class="form-control" id="confirmPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-block">Register</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Salary Setup Section -->
+        <section class="salary-section hidden" id="salarySection">
+            <div class="salary-container">
+                <h2 class="salary-title">Set Your Monthly Income</h2>
+                <p class="salary-subtitle">Enter your monthly salary to start tracking your finances</p>
+                
+                <div class="currency-selector">
+                    <label for="currencySelect">Currency:</label>
+                    <select id="currencySelect" class="form-control" style="width: auto;">
+                        <option value="USD">USD ($)</option>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="GBP">GBP (£)</option>
+                        <option value="JPY">JPY (¥)</option>
+                        <option value="CAD">CAD (C$)</option>
+                        <option value="AUD">AUD (A$)</option>
+                        <option value="INR">INR (₹)</option>
+                        <option value="CNY">CNY (¥)</option>
+                        <option value="BRL">BRL (R$)</option>
+                        <option value="ZAR">ZAR (R)</option>
+                    </select>
+                </div>
+                
+                <input type="number" class="form-control salary-input" id="salaryInput" placeholder="Enter your monthly income" min="0" step="0.01">
+                
+                <div class="salary-actions">
+                    <button class="btn btn-secondary" id="skipSalaryBtn">Skip for Now</button>
+                    <button class="btn btn-success" id="saveSalaryBtn">Save & Continue</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Section -->
+        <section class="dashboard" id="dashboardSection">
+            <div class="container">
+                <div class="dashboard-header">
+                    <h1 class="dashboard-title">Financial Dashboard</h1>
+                    <div class="dashboard-actions">
+                        <button class="btn" id="editSalaryBtn">
+                            <i class="fas fa-edit"></i> Edit Income
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-container">
+                    <div class="stat-card income">
+                        <div class="stat-card-header">
+                            <h3 class="stat-card-title">Monthly Income</h3>
+                            <div class="stat-card-icon income-icon">
+                                <i class="fas fa-arrow-down"></i>
+                            </div>
+                        </div>
+                        <div class="stat-card-value" id="salaryValue">$0.00</div>
+                        <div class="stat-card-change positive">
+                            <i class="fas fa-arrow-up"></i> <span>0% from last month</span>
+                        </div>
+                    </div>
+                    <div class="stat-card expense">
+                        <div class="stat-card-header">
+                            <h3 class="stat-card-title">Total Expenses</h3>
+                            <div class="stat-card-icon expense-icon">
+                                <i class="fas fa-arrow-up"></i>
+                            </div>
+                        </div>
+                        <div class="stat-card-value" id="expenseValue">$0.00</div>
+                        <div class="stat-card-change negative">
+                            <i class="fas fa-arrow-up"></i> <span>0% from last month</span>
+                        </div>
+                    </div>
+                    <div class="stat-card balance">
+                        <div class="stat-card-header">
+                            <h3 class="stat-card-title">Remaining Balance</h3>
+                            <div class="stat-card-icon balance-icon">
+                                <i class="fas fa-wallet"></i>
+                            </div>
+                        </div>
+                        <div class="stat-card-value" id="balanceValue">$0.00</div>
+                        <div class="stat-card-change positive">
+                            <i class="fas fa-arrow-up"></i> <span>0% from last month</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transactions Section -->
+                <div class="transaction-section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-exchange-alt"></i> Transactions
+                        </h2>
+                        <button class="btn" id="addTransactionBtn">
+                            <i class="fas fa-plus"></i> Add Transaction
+                        </button>
+                    </div>
+
+                    <!-- Add Transaction Form -->
+                    <div class="transaction-form" id="transactionForm">
+                        <div class="form-group">
+                            <label for="transactionTitle">Transaction Title</label>
+                            <input type="text" class="form-control" id="transactionTitle" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="transactionAmount">Amount</label>
+                                <input type="number" class="form-control" id="transactionAmount" min="0" step="0.01" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="transactionType">Type</label>
+                                <select class="form-control" id="transactionType" required>
+                                    <option value="expense">Expense</option>
+                                    <option value="income">Income</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="transactionDate">Date</label>
+                                <input type="date" class="form-control" id="transactionDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="transactionCategory">Category</label>
+                                <select class="form-control" id="transactionCategory" required>
+                                    <option value="">Select a category</option>
+                                    <option value="food">Food & Dining</option>
+                                    <option value="transport">Transportation</option>
+                                    <option value="shopping">Shopping</option>
+                                    <option value="entertainment">Entertainment</option>
+                                    <option value="bills">Bills & Utilities</option>
+                                    <option value="healthcare">Healthcare</option>
+                                    <option value="education">Education</option>
+                                    <option value="travel">Travel</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="transactionDescription">Description (Optional)</label>
+                            <textarea class="form-control" id="transactionDescription" rows="2"></textarea>
+                        </div>
+                        <div style="display: flex; gap: 1rem;">
+                            <button type="button" class="btn btn-secondary" id="cancelTransactionBtn">Cancel</button>
+                            <button type="button" class="btn" id="saveTransactionBtn">Save Transaction</button>
+                        </div>
+                    </div>
+
+                    <!-- Transactions List -->
+                    <div class="transaction-list" id="transactionList">
+                        <div class="empty-state">
+                            <i class="fas fa-receipt"></i>
+                            <p>No transactions yet. Add your first transaction to get started!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Edit Salary Modal -->
+    <div class="modal" id="salaryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Monthly Income</h3>
+                <button class="modal-close" id="closeSalaryModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="editSalaryInput">Monthly Income</label>
+                    <input type="number" class="form-control" id="editSalaryInput" min="0" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="editCurrencySelect">Currency</label>
+                    <select id="editCurrencySelect" class="form-control">
+                        <option value="USD">USD ($)</option>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="GBP">GBP (£)</option>
+                        <option value="JPY">JPY (¥)</option>
+                        <option value="CAD">CAD (C$)</option>
+                        <option value="AUD">AUD (A$)</option>
+                        <option value="INR">INR (₹)</option>
+                        <option value="CNY">CNY (¥)</option>
+                        <option value="BRL">BRL (R$)</option>
+                        <option value="ZAR">ZAR (R)</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <button class="btn btn-secondary" id="cancelSalaryBtn">Cancel</button>
+                    <button class="btn btn-success" id="updateSalaryBtn">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Currency symbols mapping
+        const currencySymbols = {
+            'USD': '$',
+            'EUR': '€',
+            'GBP': '£',
+            'JPY': '¥',
+            'CAD': 'C$',
+            'AUD': 'A$',
+            'INR': '₹',
+            'CNY': '¥',
+            'BRL': 'R$',
+            'ZAR': 'R'
+        };
+
+        // DOM Elements
+        const authSection = document.getElementById('authSection');
+        const salarySection = document.getElementById('salarySection');
+        const dashboardSection = document.getElementById('dashboardSection');
+        const userInfo = document.getElementById('userInfo');
+        const userAvatar = document.getElementById('userAvatar');
+        const userEmail = document.getElementById('userEmail');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        // Auth Elements
+        const loginTab = document.getElementById('loginTab');
+        const registerTab = document.getElementById('registerTab');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const loginAlert = document.getElementById('loginAlert');
+        const registerAlert = document.getElementById('registerAlert');
+
+        // Salary Elements
+        const currencySelect = document.getElementById('currencySelect');
+        const salaryInput = document.getElementById('salaryInput');
+        const skipSalaryBtn = document.getElementById('skipSalaryBtn');
+        const saveSalaryBtn = document.getElementById('saveSalaryBtn');
+        const editSalaryBtn = document.getElementById('editSalaryBtn');
+        const salaryModal = document.getElementById('salaryModal');
+        const closeSalaryModal = document.getElementById('closeSalaryModal');
+        const editSalaryInput = document.getElementById('editSalaryInput');
+        const editCurrencySelect = document.getElementById('editCurrencySelect');
+        const cancelSalaryBtn = document.getElementById('cancelSalaryBtn');
+        const updateSalaryBtn = document.getElementById('updateSalaryBtn');
+
+        // Dashboard Elements
+        const salaryValue = document.getElementById('salaryValue');
+        const expenseValue = document.getElementById('expenseValue');
+        const balanceValue = document.getElementById('balanceValue');
+        const addTransactionBtn = document.getElementById('addTransactionBtn');
+        const transactionForm = document.getElementById('transactionForm');
+        const cancelTransactionBtn = document.getElementById('cancelTransactionBtn');
+        const saveTransactionBtn = document.getElementById('saveTransactionBtn');
+        const transactionList = document.getElementById('transactionList');
+
+        // Transaction Form Elements
+        const transactionTitle = document.getElementById('transactionTitle');
+        const transactionAmount = document.getElementById('transactionAmount');
+        const transactionType = document.getElementById('transactionType');
+        const transactionDate = document.getElementById('transactionDate');
+        const transactionCategory = document.getElementById('transactionCategory');
+        const transactionDescription = document.getElementById('transactionDescription');
+
+        // Initialize App
+        function initApp() {
+            // Check if user is logged in
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                updateUserInfo(user); // Update user info in header
+                
+                // Check if salary is set
+                const salary = localStorage.getItem(`salary_${user.id}`);
+                if (salary) {
+                    showDashboard();
+                } else {
+                    showSalarySection();
+                }
+            } else {
+                showAuthSection();
+            }
+
+            // Set today's date as default for transaction date
+            transactionDate.valueAsDate = new Date();
+        }
+
+        // Auth Functions
+        function showAuthSection() {
+            authSection.classList.remove('hidden');
+            salarySection.classList.add('hidden');
+            dashboardSection.classList.remove('active');
+            userInfo.classList.add('hidden');
+        }
+
+        function showSalarySection() {
+            authSection.classList.add('hidden');
+            salarySection.classList.remove('hidden');
+            dashboardSection.classList.remove('active');
+            userInfo.classList.remove('hidden');
+        }
+
+        function showDashboard() {
+            authSection.classList.add('hidden');
+            salarySection.classList.add('hidden');
+            dashboardSection.classList.add('active');
+            userInfo.classList.remove('hidden');
+            
+            // Update dashboard data
+            updateDashboard();
+        }
+
+        function updateUserInfo(user) {
+            userAvatar.textContent = user.name.charAt(0).toUpperCase();
+            userEmail.textContent = user.email;
+        }
+
+        function showAlert(alertElement, message, type) {
+            const icon = type === 'danger' ? 'fas fa-exclamation-circle' : 'fas fa-check-circle';
+            alertElement.innerHTML = `<div class="alert alert-${type}"><i class="${icon}"></i> ${message}</div>`;
+            setTimeout(() => {
+                alertElement.innerHTML = '';
+            }, 5000);
+        }
+
+        // Tab Switching
+        loginTab.addEventListener('click', () => {
+            loginTab.classList.add('active');
+            registerTab.classList.remove('active');
+            loginForm.classList.add('active');
+            registerForm.classList.remove('active');
+        });
+
+        registerTab.addEventListener('click', () => {
+            registerTab.classList.add('active');
+            loginTab.classList.remove('active');
+            registerForm.classList.add('active');
+            loginForm.classList.remove('active');
+        });
+
+        // Login Form Submission
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            // Get users from localStorage
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            
+            // Find user with matching email and password
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                // Save current user to localStorage
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                
+                // Update user info in header
+                updateUserInfo(user);
+                
+                // Check if salary is set
+                const salary = localStorage.getItem(`salary_${user.id}`);
+                if (salary) {
+                    showDashboard();
+                } else {
+                    showSalarySection();
+                }
+                
+                // Reset form
+                loginForm.reset();
+            } else {
+                showAlert(loginAlert, 'Invalid email or password. Please try again.', 'danger');
+            }
+        });
+
+        // Register Form Submission
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // Validate passwords match
+            if (password !== confirmPassword) {
+                showAlert(registerAlert, 'Passwords do not match. Please try again.', 'danger');
+                return;
+            }
+            
+            // Get users from localStorage
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            
+            // Check if email already exists
+            if (users.some(u => u.email === email)) {
+                showAlert(registerAlert, 'An account with this email already exists. Please login or use a different email.', 'danger');
+                return;
+            }
+            
+            // Create new user
+            const newUser = {
+                id: Date.now().toString(),
+                name,
+                email,
+                password
+            };
+            
+            // Add user to localStorage
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            // Save current user to localStorage
+            localStorage.setItem('currentUser', JSON.stringify(newUser));
+            
+            // Update user info in header
+            updateUserInfo(newUser);
+            
+            // Show success message
+            showAlert(registerAlert, 'Registration successful! Please set your income to continue.', 'success');
+            
+            // Reset form
+            registerForm.reset();
+            
+            // Show salary section after a delay
+            setTimeout(() => {
+                showSalarySection();
+            }, 1500);
+        });
+
+        // Logout
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('currentUser');
+            showAuthSection();
+        });
+
+        // Salary Functions
+        skipSalaryBtn.addEventListener('click', () => {
+            showDashboard();
+        });
+
+        saveSalaryBtn.addEventListener('click', () => {
+            const salary = parseFloat(salaryInput.value);
+            const currency = currencySelect.value;
+            
+            if (isNaN(salary) || salary <= 0) {
+                alert('Please enter a valid income amount.');
+                return;
+            }
+            
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            localStorage.setItem(`salary_${currentUser.id}`, salary.toString());
+            localStorage.setItem(`currency_${currentUser.id}`, currency);
+            
+            showDashboard();
+        });
+
+        editSalaryBtn.addEventListener('click', () => {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            const currentSalary = localStorage.getItem(`salary_${currentUser.id}`) || '0';
+            const currentCurrency = localStorage.getItem(`currency_${currentUser.id}`) || 'USD';
+            
+            editSalaryInput.value = currentSalary;
+            editCurrencySelect.value = currentCurrency;
+            salaryModal.classList.add('active');
+        });
+
+        closeSalaryModal.addEventListener('click', () => {
+            salaryModal.classList.remove('active');
+        });
+
+        cancelSalaryBtn.addEventListener('click', () => {
+            salaryModal.classList.remove('active');
+        });
+
+        updateSalaryBtn.addEventListener('click', () => {
+            const salary = parseFloat(editSalaryInput.value);
+            const currency = editCurrencySelect.value;
+            
+            if (isNaN(salary) || salary < 0) {
+                alert('Please enter a valid income amount.');
+                return;
+            }
+            
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            localStorage.setItem(`salary_${currentUser.id}`, salary.toString());
+            localStorage.setItem(`currency_${currentUser.id}`, currency);
+            
+            salaryModal.classList.remove('active');
+            updateDashboard();
+        });
+
+        // Transaction Functions
+        addTransactionBtn.addEventListener('click', () => {
+            transactionForm.classList.add('active');
+            transactionTitle.focus();
+        });
+
+        cancelTransactionBtn.addEventListener('click', () => {
+            resetTransactionForm();
+            transactionForm.classList.remove('active');
+        });
+
+        saveTransactionBtn.addEventListener('click', () => {
+            // Validate form
+            if (!transactionTitle.value || !transactionAmount.value || !transactionDate.value || !transactionCategory.value) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+            
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            const transactionId = Date.now().toString();
+            
+            const transaction = {
+                id: transactionId,
+                title: transactionTitle.value,
+                amount: parseFloat(transactionAmount.value),
+                type: transactionType.value,
+                date: transactionDate.value,
+                category: transactionCategory.value,
+                description: transactionDescription.value,
+                userId: currentUser.id
+            };
+            
+            // Get existing transactions or create new array
+            const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+            
+            // Add new transaction
+            transactions.push(transaction);
+            
+            // Save to localStorage
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+            
+            // Reset form and hide
+            resetTransactionForm();
+            transactionForm.classList.remove('active');
+            
+            // Update dashboard
+            updateDashboard();
+        });
+
+        function resetTransactionForm() {
+            transactionTitle.value = '';
+            transactionAmount.value = '';
+            transactionType.value = 'expense';
+            transactionDate.valueAsDate = new Date();
+            transactionCategory.value = '';
+            transactionDescription.value = '';
+        }
+
+        function formatCurrency(amount, currency) {
+            const symbol = currencySymbols[currency] || '$';
+            return `${symbol}${amount.toFixed(2)}`;
+        }
+
+        function updateDashboard() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            const currency = localStorage.getItem(`currency_${currentUser.id}`) || 'USD';
+            
+            // Get salary
+            const salary = parseFloat(localStorage.getItem(`salary_${currentUser.id}`)) || 0;
+            salaryValue.textContent = formatCurrency(salary, currency);
+            
+            // Get transactions
+            const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+            const userTransactions = transactions.filter(t => t.userId === currentUser.id);
+            
+            // Calculate expenses
+            const expenses = userTransactions
+                .filter(t => t.type === 'expense')
+                .reduce((sum, t) => sum + t.amount, 0);
+            
+            expenseValue.textContent = formatCurrency(expenses, currency);
+            
+            // Calculate balance
+            const income = userTransactions
+                .filter(t => t.type === 'income')
+                .reduce((sum, t) => sum + t.amount, 0);
+            
+            const balance = salary + income - expenses;
+            balanceValue.textContent = formatCurrency(balance, currency);
+            
+            // Update transactions list
+            updateTransactionsList(userTransactions, currency);
+        }
+
+        function updateTransactionsList(transactions, currency) {
+            if (transactions.length === 0) {
+                transactionList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-receipt"></i>
+                        <p>No transactions yet. Add your first transaction to get started!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Sort transactions by date (newest first)
+            const sortedTransactions = [...transactions].sort((a, b) => 
+                new Date(b.date) - new Date(a.date)
+            );
+            
+            // Generate HTML for transactions
+            const transactionsHTML = sortedTransactions.map(transaction => {
+                const date = new Date(transaction.date);
+                const formattedDate = date.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric' 
+                });
+                
+                const isExpense = transaction.type === 'expense';
+                const amountClass = isExpense ? 'expense-amount' : 'income-amount';
+                const amountPrefix = isExpense ? '-' : '+';
+                const icon = isExpense ? 'fa-arrow-up' : 'fa-arrow-down';
+                const categoryClass = `category-${transaction.category}`;
+                
+                return `
+                    <div class="transaction-item">
+                        <div class="transaction-details">
+                            <div class="transaction-icon ${categoryClass}">
+                                <i class="fas ${icon}"></i>
+                            </div>
+                            <div class="transaction-info">
+                                <h4>${transaction.title}</h4>
+                                <p>${formattedDate} • ${transaction.category}</p>
+                            </div>
+                        </div>
+                        <div class="transaction-amount ${amountClass}">
+                            ${amountPrefix}${formatCurrency(transaction.amount, currency)}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            transactionList.innerHTML = transactionsHTML;
+        }
+
+        // Initialize the app
+        initApp();
+    </script>
+</body>
+</html>
